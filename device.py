@@ -55,7 +55,10 @@ class SendEvents(object):
         return not self.send_event_queue.empty()
 
     def get_send_event(self):
-        return self.send_event_queue.get()
+        if self.has_send_event():
+            return self.send_event_queue.get()
+        else:
+            return None
 
 
 class BasicBlock(RegisterClasses, ReceiveEvents, SendEvents):
