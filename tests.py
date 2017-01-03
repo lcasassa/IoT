@@ -5,6 +5,31 @@ from nose.tools import assert_raises
 from nose.tools import raises
 
 
+class TestReceiveEvents(object):
+    @classmethod
+    def setup_class(klass):
+        """This method is run once for each class before any tests are run"""
+
+    @classmethod
+    def teardown_class(klass):
+        """This method is run once for each class _after_ all tests are run"""
+
+    def setUp(self):
+        """This method is run once before _each_ test method is executed"""
+
+    def teardown(self):
+        """This method is run once after _each_ test method is executed"""
+
+    def test_init(self):
+        r = device.ReceiveEvents()
+        assert_equal(r.has_receive_event(), False)
+        assert_equal(r.get_receive_event(), None)
+        event = ["abs", {1:2, 3:4}]
+        r.receive_event(event)
+        assert_equal(r.has_receive_event(), True)
+        assert_equal(r.get_receive_event(), event)
+
+
 class TestRegisterClasses(object):
     @classmethod
     def setup_class(klass):
