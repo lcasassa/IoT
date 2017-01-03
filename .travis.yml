@@ -13,5 +13,5 @@ notifications:
   email:
     - lcasassa@gmail.com
 after_script:
-  - coverage report
+  - coverage report --source devices.py
   - covio
