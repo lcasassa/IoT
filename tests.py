@@ -30,6 +30,32 @@ class TestReceiveEvents(object):
         assert_equal(r.get_receive_event(), event)
 
 
+class TestSendEvents(object):
+    @classmethod
+    def setup_class(klass):
+        """This method is run once for each class before any tests are run"""
+
+    @classmethod
+    def teardown_class(klass):
+        """This method is run once for each class _after_ all tests are run"""
+
+    def setUp(self):
+        """This method is run once before _each_ test method is executed"""
+
+    def teardown(self):
+        """This method is run once after _each_ test method is executed"""
+
+    def test_init(self):
+        id = 123
+        r = device.SendEvents(id=id)
+        assert_equal(r.has_send_event(), False)
+        assert_equal(r.get_send_event(), None)
+        event = ["abs", {1:2, 3:4}]
+        r.send_event(event)
+        assert_equal(r.has_send_event(), True)
+        assert_equal(r.get_send_event(), {'data': event, 'id':id})
+
+
 class TestRegisterClasses(object):
     @classmethod
     def setup_class(klass):
