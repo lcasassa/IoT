@@ -77,4 +77,4 @@ class TestRegisterClasses(object):
 
 if __name__ == '__main__':
     import nose
-    nose.runmodule()
+    nose.run(argv=[__file__, '--with-doctest', '-vv'])
