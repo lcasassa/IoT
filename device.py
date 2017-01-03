@@ -31,7 +31,10 @@ class ReceiveEvents(object):
         return not self.receive_event_queue.empty()
 
     def get_receive_event(self):
-        return self.receive_event_queue.get()
+        if self.has_receive_event():
+            return self.receive_event_queue.get()
+        else:
+            return None
 
     def receive_event(self, event):
         self.receive_event_queue.put(event)
