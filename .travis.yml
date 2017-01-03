@@ -3,10 +3,12 @@ python:
   - "2.7"
 install:
   - pip install -r requirements.txt
+  - pip install pep8 pip-tools coviolations_app coverage
 script:
-  - nosetests test.py
+  - nosetests --with-coverage 2>test_result
 notifications:
   email:
     - lcasassa@gmail.com
-after_success:
-  - nosetests --with-coverage test.py
+after_script:
+  - coverage report
+  - covio
