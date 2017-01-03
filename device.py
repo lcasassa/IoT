@@ -41,9 +41,11 @@ class ReceiveEvents(object):
 
 
 class SendEvents(object):
-    def __init__(self):
+    def __init__(self, id=None):
         super(SendEvents, self).__init__()
-        assert hasattr(self, "id"), "Please use BasicBlock class or define self.id"
+        if not hasattr(self, "id") and id != None:
+            self.id = id
+        assert hasattr(self, "id"), "Please use BasicBlock class or call the constucter of SendEvents with a valid id argument"
         self.send_event_queue = Queue()
 
     def send_event(self, data):
