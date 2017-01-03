@@ -5,7 +5,7 @@ install:
   - pip install -r requirements.txt
   - pip install codecov
 script:
-  - coverage run tests.py --omit tests.py
+  - coverage run tests.py
 after_success:
   - codecov
 notifications:
