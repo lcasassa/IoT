@@ -13,3 +13,6 @@ input1_true:
 input1_false:
 	echo 0 > input1.txt
 
+clean:
+	rm input0.txt input1.txt
+
