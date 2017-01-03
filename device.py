@@ -2,31 +2,63 @@ from Queue import Queue
 import time
 import os
 
-class_lookup = {}
+
+class RegisterClasses(object):
+    class_lookup = {}
+
+    def __init__(self):
+        super(RegisterClasses, self).__init__()
+
+    @classmethod
+    def make_available(cls):
+        RegisterClasses.class_lookup.update({cls.__name__: cls})
+
+    @staticmethod
+    def has_class(name):
+        return name in RegisterClasses.class_lookup
+
+    @staticmethod
+    def get_class(name):
+        return RegisterClasses.class_lookup[name]
 
 
-class BasicBlock(object):
+class ReceiveEvents(object):
+    def __init__(self):
+        super(ReceiveEvents, self).__init__()
+        self.receive_event_queue = Queue()
+
+    def has_receive_event(self):
+        return not self.receive_event_queue.empty()
+
+    def get_receive_event(self):
+        return self.receive_event_queue.get()
+
+    def receive_event(self, event):
+        self.receive_event_queue.put(event)
+
+
+class SendEvents(object):
+    def __init__(self):
+        super(SendEvents, self).__init__()
+        assert hasattr(self, "id"), "Please use BasicBlock class or define self.id"
+        self.send_event_queue = Queue()
+
+    def send_event(self, data):
+        self.send_event_queue.put({'id': self.id, 'data': data})
+
+    def has_send_event(self):
+        return not self.send_event_queue.empty()
+
+    def get_send_event(self):
+        return self.send_event_queue.get()
+
+
+class BasicBlock(RegisterClasses, ReceiveEvents, SendEvents):
     class_lookup = {}
 
     def __init__(self, id):
         self.id = id
-        self.send_event_queue = Queue()
-        self.receive_event_queue = Queue()
-
-    @classmethod
-    def make_available(cls):
-        BasicBlock.class_lookup.update({cls.__name__ : cls})
-
-    @staticmethod
-    def has_class(name):
-        return name in BasicBlock.class_lookup
-
-    @staticmethod
-    def get_class(name):
-        return BasicBlock.class_lookup[name]
-
-    def send_event(self, data):
-        self.send_event_queue.put({'id': self.id, 'data': data})
+        super(BasicBlock, self).__init__()
 
     def loop(self):
         assert False, "Please implement loop in %s" % (self.__class__.__name__)
@@ -52,8 +84,8 @@ class Input(BasicBlock):
             self.status = status
             self.send_event({'output': status})
 
-        if not self.receive_event_queue.empty():
-            event = self.receive_event_queue.get()
+        if self.has_receive_event():
+            event = self.get_receive_event()
             print "Input", self.id, event
             
 Input.make_available()
@@ -66,8 +98,8 @@ class Output(BasicBlock):
         self.loop()
 
     def loop(self):
-        if not self.receive_event_queue.empty():
-            event = self.receive_event_queue.get()
+        if self.has_receive_event():
+            event = self.get_receive_event()
             print "Output", self.id, event
 
 Output.make_available()
@@ -81,8 +113,8 @@ class And(BasicBlock):
         self.loop()
 
     def loop(self):
-        if not self.receive_event_queue.empty():
-            event = self.receive_event_queue.get()
+        if self.has_receive_event():
+            event = self.get_receive_event()
             self.inputs.update({event['id']: event['data']['output']})
 
             output = True
@@ -121,11 +153,14 @@ class MainLoop():
                 o.loop()
             
             for o in self.objects.values():
-                if not o.send_event_queue.empty():
-                    event = o.send_event_queue.get()
+                if o.has_send_event():
+                    event = o.get_send_event()
                     for c in self.connections:
                         if c['from'] == event['id']:
-                            self.objects[c['to']].receive_event_queue.put(event)
+                            if c['to'] in self.objects:
+                                self.objects[c['to']].receive_event(event)
+                            else:
+                                assert False, "Implement communication to other devices"
             time.sleep(0.1)
                 
 
