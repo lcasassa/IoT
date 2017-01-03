@@ -1,17 +1,13 @@
 language: python
 python:
   - "2.7"
-before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq sloccount
-  - pip install pep8 pip-tools coviolations_app coverage
 install:
   - pip install -r requirements.txt
+  - pip install codecov
 script:
-  - nosetests --with-coverage 2>test_result
+  - coverage run tests.py
+after_success:
+  - codecov
 notifications:
   email:
     - lcasassa@gmail.com
-after_script:
-  - coverage report --source devices.py
-  - covio

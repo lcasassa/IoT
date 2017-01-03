@@ -49,3 +49,7 @@ class TestRegisterClasses(object):
         assert_equal(device.RegisterClasses.get_class("A").__name__, A.__name__)
         assert_equal(device.RegisterClasses.get_class("B").__name__, B.__name__)
         assert_equal(device.RegisterClasses.get_class("C").__name__, C.__name__)
+
+if __name__ == '__main__':
+    import nose
+    nose.runmodule()
