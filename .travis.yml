@@ -4,9 +4,9 @@ python:
 install:
   - pip install -r requirements.txt
 script:
-  - python test.py
+  - nosetests test.py
 notifications:
   email:
     - lcasassa@gmail.com
 after_success:
-  - echo Doing coverage..
+  - nosetests --with-coverage test.py
